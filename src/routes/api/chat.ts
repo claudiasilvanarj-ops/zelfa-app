@@ -170,7 +170,7 @@ Lista de compras atual (não é estoque em casa): ${(items ?? []).map((i) => i.n
             })
           : createOpenAI({ apiKey: openaiKey! });
         const modelName = geminiKey
-          ? process.env["GEMINI_MODEL"]?.trim() || "gemini-2.5-flash"
+          ? process.env["GEMINI_MODEL"]?.trim() || "gemini-3.5-flash-lite"
           : process.env["OPENAI_MODEL"]?.trim() || "gpt-4o-mini";
 
         const tools = {

@@ -17,7 +17,7 @@ export const describeLiveFrame = createServerFn({ method: 'POST' })
     const provider = geminiKey
       ? createOpenAI({ apiKey: geminiKey, baseURL: 'https://generativelanguage.googleapis.com/v1beta/openai/' })
       : createOpenAI({ apiKey: openaiKey! });
-    const modelName = geminiKey ? (process.env['GEMINI_MODEL']?.trim() || 'gemini-2.5-flash') : (process.env['OPENAI_MODEL']?.trim() || 'gpt-4o-mini');
+    const modelName = geminiKey ? (process.env['GEMINI_MODEL']?.trim() || 'gemini-3.5-flash-lite') : (process.env['OPENAI_MODEL']?.trim() || 'gpt-4o-mini');
     const result = streamText({
       model: provider.chat(modelName),
       output: Output.object({ schema: z.object({ description: z.string() }) }),
