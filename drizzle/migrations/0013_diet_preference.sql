@@ -1,0 +1,1 @@
+ALTER TABLE public.dietary_restrictions ADD COLUMN IF NOT EXISTS preference text, ADD COLUMN IF NOT EXISTS notes text;

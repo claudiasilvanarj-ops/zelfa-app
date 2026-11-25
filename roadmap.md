@@ -1,0 +1,35 @@
+# ZELFA roadmap
+- [x] Impedir a substituição robótica em todas as falas, preservando Kore e preferências de voz; testes de reprodução, falta de créditos e bloqueio de áudio passaram. Sem publicar.
+- [ ] Restabelecer e ouvir a voz real da Quel no app: aguarda recarga de créditos de IA; teste pela conta atual também encontrou bloqueio de aparelho, mantido sem alterações.
+- [x] Esclarecer cancelamento da renovação a qualquer momento, parcelas e reembolso; incluir passo a passo oficial da Kiwify na página de vendas, sem publicar.
+- [x] Aviso de conta individual na entrada, junto ao botão de assinatura e nas explicações da página de vendas: um aparelho por vez, sem compartilhar senha, até duas trocas por mês; sem publicar.
+- [x] E-mail de boas-vindas automático pelo Gmail (zelfaapp@gmail.com) na primeira liberação de acesso pela Kiwify; e-mail de teste enviado e recebido na caixa de entrada. Não publicado.
+- [x] Avisos por e-mail: botões "Receber por e-mail" no caderno de receitas e na lista de compras, enviando do zelfaapp@gmail.com para o e-mail da própria conta; montagem conferida, envio pelo botão ainda não testado por dentro do app.
+- [x] Recados recebidos no zelfaapp@gmail.com visíveis no painel admin: quadro com os 20 e-mails mais recentes, aberto e testado com a caixa de entrada real; quadro ainda não aberto por dentro do painel.
+- [x] Publicação oficial no ar em zelfa.app e zelfa.app/pagdevendas: página de vendas nova conferida no site publicado (9 perguntas, seção da assinatura, preço R$ 290,00 / 12x R$ 29,99, link Kiwify anual, vídeo, sem erro de tela).
+- [x] Acrescentar 9 perguntas e respostas e explicação da assinatura anual, renovação e cancelamento na página de vendas; perguntas abertas e página conferida no computador e celular, sem publicar.
+- [x] Retirar oferta mensal e manter apenas o plano anual na página de vendas e na ativação; página conferida no computador/celular e links anuais verificados, sem publicar.
+- [x] Atualizar o link anual e informar na página de vendas R$ 290,00 ou até 12x de R$ 29,99 (total parcelado R$ 359,88); conferido no preview no computador e celular, sem publicar.
+- [x] Esclarecer custos do suporte automático por WhatsApp: separar IA, mensagens da Meta e funcionamento do app; sem orçamento mensal confirmado.
+- [x] Suporte por e-mail zelfaapp@gmail.com na página de vendas e na tela de entrar; suporte por WhatsApp cancelado.
+- [x] Karaokê: regra de letras e melodias protegidas, versos próprios com autoria confirmada, criação por tema e encorajamento externo; resposta com versos originais verificada na conta. Voz lê os versos; não foi acrescentada geração de gravação cantada.
+- [x] Regra de direitos autorais aplicada a todos os modos; retiradas sugestões protegidas; links externos Spotify/YouTube Music e resposta sem letra para Asa Branca verificados na conta. Mantidas playlists locais e letras originais; nenhum catálogo externo ou geração de gravação musical foi acrescentado neste ajuste de regra.
+- [x] Família Conectada: convites, aprovação explícita, horários de Brasília e revogação; vídeo WebRTC sem gravação, tela noturna e alertas auxiliares locais. Tela autenticada, rejeição de autoconvite, regras de horário e descrição de imagem pública verificadas.
+- [ ] Verificar convite, aprovação, vídeo, alertas e revogação entre duas contas reais: só existe uma conta cadastrada; aguarda conta do familiar.
+- [ ] Garantir conexão de vídeo entre redes restritivas: aguarda serviço de retransmissão de vídeo (TURN); conexão direta atual não garante cobertura em todas as redes.
+- [x] Planejamento doméstico semanal conversacional: tarefas equilibradas com duração, ajustes de rotina e pendências, mercado com compras; criação, conclusão e adiamento verificados na conta. Avisos e reorganização enquanto o app está aberto.
+- [x] Compras inteligentes: ingredientes disponíveis/faltantes, estimativas, setores, dicas de economia e lista no lembrete do mercado; receita e compromisso verificados na conta
+- [x] Chef da ZELFA: mínimo 3 opções, bolos/doces/pães e adaptações; preparo escrito/falado no ritmo da usuária; lista de compras verificada com sessão da usuária
+- [x] Jogos & Diversão: acesso próprio, memória (frutas, animais e fotos da família), forca, palavras cruzadas, adivinhações, quiz, memória leve, colorir, sons e histórias
+- [x] Verificar acesso e todos os jogos no celular e desktop, preservando os outros 9 atalhos
+- [x] Login (e-mail, Google, Lovable) + tela inicial com saudação, 9 cards, resumo do dia
+- [x] Conversa com a ZELFA: texto, voz (ouvir/falar), foto; modos por botão
+- [x] Comida, Exercício, Conversa amorosa, Notícias (manchetes reais), Jogos (por conversa)
+- [x] Me Ensina: foto de aparelho, bilhete ou remédio → passo a passo escrito e falado + lembretes (categoria Remédios)
+- [x] Tela inicial com 10 cards
+- [x] Sono (sons), Respiração (animação), Música & Canto (sons + cantigas com letra/karaokê)
+- [x] Agenda + lista de compras (criadas pela conversa/foto), horários livres, lembretes no app
+- [x] Câmera com aviso visível + descrever ambiente; lista de família autorizada
+- [x] Área administrativa /admin: login exclusivo, indicadores, gráficos, clientes, visitantes, CSV, cancelar, brinde, histórico, tentativas bloqueadas
+- [x] PWA instalável
+- Aguardando: login por telefone (precisa serviço de SMS), aviso por WhatsApp (precisa conta). Vídeo e alertas exigem app aberto nos dois aparelhos; não há vigilância médica ou garantia de funcionamento com tela bloqueada.

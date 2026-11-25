@@ -1,0 +1,4 @@
+ALTER TABLE public.shopping_items ADD COLUMN sector text NOT NULL DEFAULT 'Mercearia', ADD COLUMN estimated_price numeric(10,2);
+ALTER TABLE public.shopping_items ADD CONSTRAINT shopping_sector_allowed CHECK (sector IN ('Hortifruti','Açougue','Mercearia','Padaria','Laticínios','Outros')), ADD CONSTRAINT shopping_price_nonnegative CHECK (estimated_price IS NULL OR estimated_price >= 0);
+COMMENT ON COLUMN public.shopping_items.estimated_price IS 'Approximate total BRL price for the listed quantity, not a live quote.';
+COMMENT ON COLUMN public.shopping_items.sector IS 'Market aisle used to group the shopping list.';
