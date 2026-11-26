@@ -5,7 +5,7 @@ import lasanha from "@/assets/dishes/lasanha.jpg";
 import moqueca from "@/assets/dishes/moqueca.jpg";
 import bolo from "@/assets/dishes/bolo.jpg";
 import torta from "@/assets/dishes/torta.jpg";
-import videoGeladeira from "@/assets/videos/geladeira-fala-corrigida.mp4.asset.json";
+const VIDEO_GELADEIRA_URL = "/videos/geladeira-fala-corrigida.mp4";
 
 export const Route = createFileRoute("/pagdevendas")({
   staticData: { sitemap: true },
@@ -88,7 +88,7 @@ const FAQ = [
   ],
   [
     "Posso compartilhar meu login ou usar dois aparelhos ao mesmo tempo?",
-    "Cada conta é de uso individual: 1 conta por pessoa e 1 aparelho ativo por vez. Não compartilhe seu login e senha. Entrar em outro aparelho sem fazer a troca pode bloquear a entrada nesse aparelho. Para mudar, use TROCAR DE APARELHO na tela de acesso: são até 2 trocas por mês, e o aparelho anterior será desconectado. Se precisar de ajuda, escreva para zelfaapp@gmail.com.",
+    "Cada conta é de uso individual: 1 conta por pessoa e 1 aparelho ativo por vez. Você pode usar no celular, tablet ou computador, mas ao entrar em um aparelho novo o anterior é desconectado automaticamente. Por isso, não compartilhe seu login e senha — se outra pessoa abrir sua conta, você perde o acesso na hora. Se precisar de ajuda, escreva para zelfaapp@gmail.com.",
   ],
   [
     "Como peço receitas para a ZELFA?",
@@ -137,7 +137,7 @@ function Landing() {
       <section className="mx-auto max-w-5xl px-5 py-12">
         <div className="flex flex-col items-center gap-8 md:flex-row md:items-center md:justify-center">
           <video
-            src={videoGeladeira.url}
+            src={VIDEO_GELADEIRA_URL}
             autoPlay
             muted
             loop
@@ -234,8 +234,8 @@ function Landing() {
           </p>
           <aside aria-label="Uso individual da conta" className="mt-5 border-l-4 border-accent bg-secondary p-4 text-left text-secondary-foreground">
             <p className="font-bold">💛 1 conta por pessoa · 1 aparelho por vez</p>
-            <p className="mt-2">A assinatura é individual. Não compartilhe seu login e senha para evitar bloqueios de acesso.</p>
-            <p className="mt-2 text-sm">Para mudar de aparelho, use <strong>TROCAR DE APARELHO</strong>: até <strong>2 trocas por mês</strong>. O aparelho anterior será desconectado.</p>
+            <p className="mt-2">A assinatura é individual. Você pode usar no celular ou computador, mas sempre <strong>1 aparelho ativo por vez</strong>.</p>
+            <p className="mt-2 text-sm">Ao entrar em um novo aparelho, o anterior é desconectado automaticamente — por isso, não compartilhe sua senha.</p>
           </aside>
           <a href={PAYMENT_LINK} target="_blank" rel="noopener noreferrer" className={`${cta} mt-5 px-10`}>
             ASSINAR AGORA
@@ -259,7 +259,7 @@ function Landing() {
             <li><strong>Cancelamento da renovação:</strong> pode ser feito a qualquer momento e impede a próxima renovação anual. Seu acesso continua até o fim do período pago, e as parcelas da compra anual já realizada continuam no cartão. Não gera reembolso automático.</li>
             <li><strong>Garantia:</strong> você pode solicitar reembolso integral em até 7 dias após a compra. Não é um teste gratuito. Permanecem assegurados os demais direitos previstos em lei.</li>
             <li><strong>Liberação:</strong> use o mesmo e-mail na compra e na conta ZELFA. O acesso depende da confirmação do pagamento.</li>
-            <li><strong>Uso individual:</strong> 1 conta por pessoa, em 1 aparelho por vez. Não compartilhe login e senha. A troca de aparelho é permitida até 2 vezes por mês e desconecta o aparelho anterior.</li>
+            <li><strong>Uso individual:</strong> 1 conta por pessoa, em 1 aparelho ativo por vez. Ao entrar em um novo aparelho, o anterior é desconectado automaticamente. Não compartilhe login e senha.</li>
           </ul>
         </div>
       </section>
