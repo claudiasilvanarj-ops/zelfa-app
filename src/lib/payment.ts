@@ -26,21 +26,49 @@ export const ANNUAL_INSTALLMENT_TOTAL = "R$ 359,88";
 /** An annual payment unlocks this many days. */
 export const DAYS_PER_ANNUAL_PAYMENT = 366;
 
-type KiwifyOrder = {
+export type KiwifyOrder = {
   order_id?: string; order_status?: string; webhook_event_type?: string;
-  Customer?: { email?: string };
+  Customer?: { email?: string; full_name?: string; first_name?: string; mobile?: string };
   Commissions?: { charge_amount?: number | string; product_base_price?: number | string };
-  Subscription?: { plan?: { frequency?: string } };
+  Subscription?: { status?: string; plan?: { frequency?: string } };
 };
 
 /** Returns e-mail, order id, amount and unlocked days when a Kiwify notification confirms a paid order. */
 export function kiwifyPaid(n: KiwifyOrder): { email: string; orderId: string; amountCents: number; days: number } | null {
   const email = n.Customer?.email?.trim().toLowerCase();
+  const evt = (n.webhook_event_type ?? "").toLowerCase();
+  if (evt && !["order_approved", "subscription_renewed"].includes(evt)) return null;
   if (n.order_status !== "paid" || !email || !n.order_id) return null;
   const amountCents = Number(n.Commissions?.charge_amount ?? n.Commissions?.product_base_price ?? 0);
   const freq = (n.Subscription?.plan?.frequency ?? "").toLowerCase();
   const annual = /year|annual|anual/.test(freq) || amountCents >= ANNUAL_PRICE_CENTS;
   return { email, orderId: n.order_id, amountCents, days: annual ? DAYS_PER_ANNUAL_PAYMENT : DAYS_PER_PAYMENT };
+}
+
+/** Extracts customer name and phone from a Kiwify payload (used when auto-creating the user account). */
+export function kiwifyCustomer(n: KiwifyOrder): { email: string; name: string | null; phone: string | null } | null {
+  const email = n.Customer?.email?.trim().toLowerCase();
+  if (!email) return null;
+  const name = (n.Customer?.full_name ?? n.Customer?.first_name ?? "").trim() || null;
+  const phone = (n.Customer?.mobile ?? "").trim() || null;
+  return { email, name, phone };
+}
+
+/** Detects Kiwify refund, chargeback or subscription cancellation events. */
+export function kiwifyRevocation(
+  n: KiwifyOrder,
+): { email: string; orderId: string; kind: "reembolsou" | "chargeback" | "cancelou"; revokeNow: boolean } | null {
+  const email = n.Customer?.email?.trim().toLowerCase();
+  if (!email) return null;
+  const evt = (n.webhook_event_type ?? "").toLowerCase();
+  const status = (n.order_status ?? "").toLowerCase();
+  const orderId = n.order_id ?? "";
+  if (evt === "chargeback" || status === "chargedback") return { email, orderId, kind: "chargeback", revokeNow: true };
+  if (evt === "order_refunded" || status === "refunded") return { email, orderId, kind: "reembolsou", revokeNow: true };
+  if (evt === "subscription_canceled" || (n.Subscription?.status ?? "").toLowerCase() === "canceled") {
+    return { email, orderId, kind: "cancelou", revokeNow: false };
+  }
+  return null;
 }
 
 /** Kiwify signs the raw body with HMAC-SHA1 (hex) using the webhook token, sent as ?signature=. */
