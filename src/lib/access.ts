@@ -5,8 +5,9 @@ const DEVICE_KEY = "zelfa-device-id";
 const FRESH_KEY = "zelfa-fresh-login";
 
 export type AccessStatus = "ok" | "other_device" | "unpaid";
-export const MONTHLY_DEVICE_SWITCHES = 2;
-export const SUPPORT_WHATSAPP = "https://wa.me/5521997079690?text=" + encodeURIComponent("Oi! Preciso liberar a troca de aparelho na ZELFA 💛");
+export const DAILY_ABUSE_THRESHOLD = 8;
+export const MONTHLY_DEVICE_SWITCHES = 2; // mantido por compatibilidade de importação
+export const SUPPORT_WHATSAPP = "https://wa.me/5521997079690?text=" + encodeURIComponent("Oi! Preciso de ajuda com meu acesso na ZELFA 💛");
 
 export function deviceId(): string {
   let id = localStorage.getItem(DEVICE_KEY);
@@ -42,9 +43,10 @@ export async function checkAccess(): Promise<AccessStatus> {
   return s;
 }
 
-export async function switchDevice(): Promise<"ok" | "limit"> {
+export async function switchDevice(): Promise<"ok" | "cooldown" | "limit"> {
   const { data, error } = await supabase.rpc("switch_device", { _device: deviceId(), _label: deviceLabel() });
   if (error) throw error;
   if (data === "ok") clearFreshLogin();
+  if (data === "cooldown") return "cooldown";
   return data === "ok" ? "ok" : "limit";
 }

@@ -2,13 +2,13 @@ import { useEffect, useState, type ReactNode } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { checkAccess, switchDevice, isFreshLogin, clearFreshLogin, MONTHLY_DEVICE_SWITCHES, SUPPORT_WHATSAPP, type AccessStatus } from "@/lib/access";
+import { checkAccess, switchDevice, isFreshLogin, clearFreshLogin, type AccessStatus } from "@/lib/access";
 import { ANNUAL_PRICE, ANNUAL_INSTALLMENTS, ANNUAL_INSTALLMENT_PRICE, ANNUAL_INSTALLMENT_TOTAL, PAYMENT_LINK } from "@/lib/payment";
 import { appHeartbeat } from "@/lib/tracking";
 
-/** Blocks the members area until payment is confirmed and signs out devices replaced by a newer login. */
+/** Blocks the members area until payment is confirmed and enforces 1 active device at a time. */
 export function AccessGate({ children }: { children: ReactNode }) {
-  const [status, setStatus] = useState<AccessStatus | "loading" | "switch" | "limit">("loading");
+  const [status, setStatus] = useState<AccessStatus | "loading" | "switch" | "cooldown">("loading");
   const navigate = useNavigate();
   const [busy, setBusy] = useState(false);
 
@@ -18,9 +18,9 @@ export function AccessGate({ children }: { children: ReactNode }) {
       try {
         const s = await checkAccess();
         if (!alive) return;
-        if (s === "other_device" && isFreshLogin()) { setStatus((p) => (p === "limit" ? p : "switch")); return; }
+        if (s === "other_device" && isFreshLogin()) { setStatus((p) => (p === "cooldown" ? p : "switch")); return; }
         if (s === "other_device") {
-          toast.error("Sua conta entrou em outro aparelho. Por segurança, saímos daqui. 💛");
+          toast.error("Sua conta foi aberta em outro aparelho. Como o acesso é individual (1 por vez), saímos daqui. 💛");
           await supabase.auth.signOut({ scope: "local" });
           navigate({ to: "/auth", replace: true });
           return;
@@ -39,30 +39,43 @@ export function AccessGate({ children }: { children: ReactNode }) {
     setBusy(true);
     try {
       const r = await switchDevice();
-      if (r === "limit") setStatus("limit");
-      else { toast.success("Pronto! Este aparelho foi liberado 🍳"); const s = await checkAccess(); setStatus(s === "other_device" ? "switch" : s); }
-    } catch { toast.error("Não consegui trocar agora. Tente de novo?"); }
+      if (r === "cooldown" || r === "limit") setStatus("cooldown");
+      else {
+        toast.success("Pronto! Este aparelho está ativo agora e o anterior foi desconectado 🍳");
+        const s = await checkAccess();
+        setStatus(s === "other_device" ? "switch" : s);
+      }
+    } catch { toast.error("Não consegui ativar este aparelho agora. Tente de novo?"); }
     setBusy(false);
   }
 
-
   if (status === "loading") return <div className="flex min-h-screen items-center justify-center text-xl text-muted-foreground">Carregando… 🍳</div>;
   if (status === "ok") return <>{children}</>;
-  if (status === "switch" || status === "limit") return (
+  if (status === "switch" || status === "cooldown") return (
     <main className="flex min-h-screen items-center justify-center bg-background p-5">
       <div className="max-w-md rounded-[2rem] border-2 border-gold bg-card p-8 text-center shadow-soft">
         <p className="text-5xl">📱💛</p>
         {status === "switch" ? <>
-          <h1 className="mt-3 text-2xl font-bold text-primary">Sua conta já está em uso em outro aparelho 💛</h1>
-          <p className="mt-3 text-lg text-muted-foreground">Para trocar de aparelho, toque no botão abaixo ou fale com a gente. O outro aparelho será desconectado.</p>
-          <button onClick={doSwitch} disabled={busy} className="mt-5 rounded-full bg-accent px-8 py-4 text-xl font-bold text-accent-foreground shadow-soft disabled:opacity-60">TROCAR DE APARELHO 🍳</button>
-          <p className="mt-3 text-sm text-muted-foreground">Até {MONTHLY_DEVICE_SWITCHES} trocas por mês.</p>
+          <h1 className="mt-3 text-2xl font-bold text-primary">Seu acesso funciona em 1 aparelho por vez</h1>
+          <p className="mt-3 text-lg text-muted-foreground">
+            Esta conta já está aberta em outro aparelho. Se quiser usar aqui agora, <strong>o outro aparelho será desconectado na hora</strong>.
+          </p>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Por isso, não compartilhe sua senha: sempre que outra pessoa entrar, você perde o acesso no seu aparelho.
+          </p>
+          <button onClick={doSwitch} disabled={busy} className="mt-5 w-full rounded-full bg-accent px-8 py-4 text-xl font-bold text-accent-foreground shadow-soft disabled:opacity-60">
+            {busy ? "Ativando..." : "✅ USAR AQUI AGORA 🍳"}
+          </button>
         </> : <>
-          <h1 className="mt-3 text-2xl font-bold text-primary">Você já fez suas trocas deste mês.</h1>
-          <p className="mt-3 text-lg text-muted-foreground">Fale com a gente para liberar 💛</p>
+          <h1 className="mt-3 text-2xl font-bold text-primary">Muitas trocas de aparelho hoje</h1>
+          <p className="mt-3 text-lg text-muted-foreground">
+            Por segurança contra compartilhamento de conta, aguarde <strong>1 hora</strong> para ativar outro aparelho.
+          </p>
+          <p className="mt-2 text-sm text-muted-foreground">
+            O plano da ZELFA é individual e funciona em apenas 1 aparelho por vez. 💛
+          </p>
         </>}
-        <a href={SUPPORT_WHATSAPP} target="_blank" rel="noreferrer" className="mt-4 inline-block rounded-full border-2 border-primary px-8 py-3 text-lg font-bold text-primary">FALAR NO WHATSAPP 💬</a>
-        <div><button onClick={async () => { clearFreshLogin(); await supabase.auth.signOut({ scope: "local" }); navigate({ to: "/auth", replace: true }); }} className="mt-4 text-sm underline">Sair</button></div>
+        <div><button onClick={async () => { clearFreshLogin(); await supabase.auth.signOut({ scope: "local" }); navigate({ to: "/auth", replace: true }); }} className="mt-5 text-sm underline">Sair</button></div>
       </div>
     </main>
   );
@@ -76,7 +89,7 @@ export function AccessGate({ children }: { children: ReactNode }) {
         <p className="mt-2 text-xl font-bold text-primary">ou até {ANNUAL_INSTALLMENTS}x de {ANNUAL_INSTALLMENT_PRICE}</p>
         <p className="mt-2 text-sm text-muted-foreground">Parcelamento com acréscimo: total de {ANNUAL_INSTALLMENT_TOTAL}. Renovação anual automática até cancelar.</p>
         <a href={PAYMENT_LINK} target="_blank" rel="noopener noreferrer" className="mt-5 inline-block rounded-full bg-accent px-8 py-4 text-xl font-bold text-accent-foreground shadow-soft">ASSINAR ANUAL 💛</a>
-        <p className="mt-4 text-sm text-muted-foreground">Já pagou? Esta tela se atualiza sozinha. Cada conta funciona em um aparelho por vez.</p>
+        <p className="mt-4 text-sm text-muted-foreground">Já pagou? Esta tela se atualiza sozinha. Cada conta funciona em 1 aparelho por vez.</p>
         <button onClick={async () => { await supabase.auth.signOut(); navigate({ to: "/auth", replace: true }); }} className="mt-3 text-sm underline">Sair</button>
       </div>
     </main>

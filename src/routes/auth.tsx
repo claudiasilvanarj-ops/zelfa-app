@@ -91,8 +91,8 @@ function AuthPage() {
             <h1 className="text-center text-3xl font-bold">{mode === "criar" ? "Vamos nos conhecer?" : "Que bom te ver de novo!"}</h1>
             <aside aria-label="Uso individual da conta" className="mt-5 border-l-4 border-accent bg-secondary p-4 text-secondary-foreground">
               <p className="font-bold">💛 1 conta por pessoa · 1 aparelho por vez</p>
-              <p className="mt-2 text-sm">Não compartilhe seu login e senha. Usar a conta em outro aparelho sem fazer a troca pode bloquear a entrada nesse aparelho.</p>
-              <p className="mt-2 text-sm">Precisa mudar? Use <strong>TROCAR DE APARELHO</strong> na tela de acesso: são até <strong>2 trocas por mês</strong>, e o aparelho anterior será desconectado.</p>
+              <p className="mt-2 text-sm">Você pode usar no celular ou no computador, mas sempre <strong>1 aparelho ativo por vez</strong>: ao entrar em um novo, o anterior é desconectado automaticamente.</p>
+              <p className="mt-2 text-sm">Não compartilhe seu login e senha — se outra pessoa abrir sua conta, você perde o acesso na hora.</p>
             </aside>
             <form onSubmit={submit} className="mt-6 space-y-3">
               {mode === "criar" && (
