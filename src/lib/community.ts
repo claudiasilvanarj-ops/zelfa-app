@@ -1,11 +1,11 @@
 /** Canal de comunidade da ZELFA no Instagram (regras compartilhadas por telas e testes). */
-export const INSTAGRAM_HANDLE = "@universozelfa";
-export const INSTAGRAM_PROFILE = "https://www.instagram.com/universozelfa/";
-export const DIRECT_LINK = "https://ig.me/m/universozelfa";
+export const INSTAGRAM_HANDLE = "@zelfachefdecozinha";
+export const INSTAGRAM_PROFILE = "https://www.instagram.com/zelfachefdecozinha/";
+export const DIRECT_LINK = "https://ig.me/m/zelfachefdecozinha";
 export const HASHTAG = "#ZelfaChef";
 export const SHARE_INVITE = "Prontinho! Que tal mostrar seu prato para a gente? 💛";
 export const SHARE_TIP = "Tire uma foto do seu prato pronto e envie para a gente! Vamos repostar os melhores nos stories 💛";
-export const CAPTION = "Fiz esse prato com a ZELFA, minha chef de cozinha virtual! 🍳💛 #ZelfaChef @universozelfa";
+export const CAPTION = "Fiz esse prato com a ZELFA, minha chef de cozinha virtual! 🍳💛 #ZelfaChef @zelfachefdecozinha";
 export const BADGE = "⭐ Chef da Comunidade";
 const BADGE_KEY = "zelfa-chef-comunidade";
 

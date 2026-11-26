@@ -9,7 +9,7 @@ export const Route = createFileRoute("/_authenticated/comunidade")({
   head: () => ({
     meta: [
       { title: "Comunidade — ZELFA Chef" },
-      { name: "description", content: "Mostre seus pratos feitos com a ZELFA no Instagram @universozelfa." },
+      { name: "description", content: "Mostre seus pratos feitos com a ZELFA no Instagram @zelfachefdecozinha." },
       { property: "og:title", content: "Comunidade — ZELFA Chef" },
       { property: "og:description", content: "Envie a foto do seu prato e ganhe o selo Chef da Comunidade." },
       { property: "og:type", content: "website" },

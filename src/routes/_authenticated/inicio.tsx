@@ -148,7 +148,7 @@ function Inicio() {
 
           <Link to="/comunidade" className="flex items-center gap-4 rounded-[1.75rem] border-2 border-accent bg-primary p-5 text-primary-foreground shadow-soft">
             <span className="text-4xl">💛</span>
-            <span><b className="block text-xl">COMUNIDADE 💛</b><span className="opacity-90">Mostre seu prato no @universozelfa · #ZelfaChef</span></span>
+            <span><b className="block text-xl">COMUNIDADE 💛</b><span className="opacity-90">Mostre seu prato no @zelfachefdecozinha · #ZelfaChef</span></span>
           </Link>
 
           <Link to="/configuracoes" className="flex items-center gap-4 rounded-[1.75rem] bg-card p-5 shadow-soft">
