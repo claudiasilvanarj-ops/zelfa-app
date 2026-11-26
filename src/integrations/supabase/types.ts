@@ -232,6 +232,7 @@ export type Database = {
           first_name: string
           id: string
           recipe_key: string
+          recipe_markdown: string | null
           recipe_title: string
           share_consent: boolean
           status: string
@@ -246,6 +247,7 @@ export type Database = {
           first_name?: string
           id?: string
           recipe_key: string
+          recipe_markdown?: string | null
           recipe_title: string
           share_consent?: boolean
           status?: string
@@ -260,6 +262,7 @@ export type Database = {
           first_name?: string
           id?: string
           recipe_key?: string
+          recipe_markdown?: string | null
           recipe_title?: string
           share_consent?: boolean
           status?: string

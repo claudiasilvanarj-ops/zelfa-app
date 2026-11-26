@@ -38,7 +38,7 @@ async function shrink(file: File): Promise<Blob> {
   return new Promise((ok, fail) => c.toBlob((b) => (b ? ok(b) : fail(new Error("foto"))), "image/jpeg", 0.85));
 }
 
-export async function uploadDishPhoto(file: File, recipe: { title: string; category: string }, consent: boolean) {
+export async function uploadDishPhoto(file: File, recipe: { title: string; category: string; markdown?: string }, consent: boolean) {
   const { data: u } = await supabase.auth.getUser();
   if (!u.user) throw new Error("login");
   const { data: prof } = await supabase.from("profiles").select("display_name").eq("id", u.user.id).maybeSingle();
@@ -46,10 +46,12 @@ export async function uploadDishPhoto(file: File, recipe: { title: string; categ
   const blob = await shrink(file);
   const up = await supabase.storage.from(BUCKET).upload(path, blob, { contentType: "image/jpeg" });
   if (up.error) throw up.error;
-  const { error } = await supabase.from("community_photos").insert({
+  const payload: Record<string, unknown> = {
     recipe_title: recipe.title, recipe_key: recipeKey(recipe.title), category: recipe.category,
     first_name: firstName(prof?.display_name), storage_path: path, share_consent: consent, status: initialStatus(consent),
-  });
+  };
+  if (recipe.markdown) payload.recipe_markdown = recipe.markdown;
+  const { error } = await supabase.from("community_photos").insert(payload as never);
   if (error) { await supabase.storage.from(BUCKET).remove([path]); throw error; }
 }
 

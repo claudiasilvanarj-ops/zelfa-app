@@ -175,6 +175,7 @@ function ConversaPage() {
           {mode !== "geral" && (
             <Link to="/conversa" search={{}} className="rounded-full border px-4 py-2 font-semibold">Conversa livre</Link>
           )}
+          <Link to="/album" className="flex items-center gap-1 rounded-full border px-4 py-2 font-semibold">📁 Receitas e Fotos</Link>
           <Link to="/caderno" className="flex items-center gap-1 rounded-full border px-4 py-2 font-semibold">📖 Meu caderno</Link>
           <AlertDialog>
             <AlertDialogTrigger asChild>
@@ -308,6 +309,14 @@ function MessageBubble({ m, restrictions }: { m: UIMessage; restrictions: string
           return null;
         })}
         {!isUser && isCelebration(text) && <ShareDish />}
+        {!isUser && text && splitRecipes(text).some((x) => x.kind === "recipe") && (
+          <div className="mt-2 flex flex-wrap items-center gap-2 rounded-2xl bg-secondary/70 px-4 py-2 text-base">
+            <span className="font-semibold">✅ Receita guardada automaticamente na sua pasta!</span>
+            <Link to="/album" className="rounded-full bg-primary px-4 py-1.5 text-sm font-bold text-primary-foreground">
+              📁 Abrir pasta de Receitas e Fotos
+            </Link>
+          </div>
+        )}
         {!isUser && text && !splitRecipes(text).some((x) => x.kind === "recipe") && (
           <button onClick={() => speak(essentialSpeech(text))} className="mt-1 flex items-center gap-1 text-sm font-semibold text-muted-foreground">
             <Volume2 className="h-4 w-4" /> Ouvir o preparo com a Quel

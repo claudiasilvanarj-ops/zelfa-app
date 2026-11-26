@@ -6,7 +6,7 @@ import { PHOTO_ACCEPT, isAcceptedPhoto, preparePhoto } from "@/lib/photo-prep";
 
 type Step = "closed" | "menu" | "preview" | "confirm";
 
-export function DishPhotoButton({ title, category, onDone, label = "📸 FOTOGRAFEI MEU PRATO" }: { title: string; category: string; onDone: () => void; label?: string }) {
+export function DishPhotoButton({ title, category, markdown, onDone, label = "📸 FOTOGRAFEI MEU PRATO" }: { title: string; category: string; markdown?: string; onDone: () => void; label?: string }) {
   const camera = useRef<HTMLInputElement>(null);
   const gallery = useRef<HTMLInputElement>(null);
   const [step, setStep] = useState<Step>("closed");
@@ -36,7 +36,7 @@ export function DishPhotoButton({ title, category, onDone, label = "📸 FOTOGRA
     if (!file) return;
     setBusy(true);
     try {
-      await uploadDishPhoto(file, { title, category }, consent);
+      await uploadDishPhoto(file, { title, category, markdown }, consent);
       toast.success(consent ? "Foto salva! A Sil vai olhar com carinho para o Instagram 💛" : "Foto salva no seu Álbum da Cozinha! 💛");
       close(); onDone();
     } catch {

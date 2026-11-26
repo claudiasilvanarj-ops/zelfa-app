@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { buildCaption, postTitle, signedUrls } from "@/lib/dish-community";
 import { CATEGORY_LABEL, RECIPE_CATEGORIES, type RecipeCategory } from "@/lib/recipes";
 
-type Row = { id: string; recipe_title: string; first_name: string; category: string; storage_path: string; share_consent: boolean; status: string; caption: string | null; created_at: string };
+type Row = { id: string; recipe_title: string; recipe_markdown?: string | null; first_name: string; category: string; storage_path: string; share_consent: boolean; status: string; caption: string | null; created_at: string };
 
 export function CommunityPhotosAdmin() {
   const [rows, setRows] = useState<Row[]>([]);
@@ -12,6 +12,7 @@ export function CommunityPhotosAdmin() {
   const [cat, setCat] = useState("");
   const [from, setFrom] = useState("");
   const [status, setStatus] = useState("");
+  const [openRecipe, setOpenRecipe] = useState<Record<string, boolean>>({});
   const load = useCallback(async () => {
     const { data } = await supabase.from("community_photos").select("*").order("created_at", { ascending: false }).limit(300);
     const d = (data ?? []) as Row[];
@@ -29,7 +30,7 @@ export function CommunityPhotosAdmin() {
   const sel = "rounded-xl border-2 border-border bg-background px-3 py-2";
   return (
     <section className="rounded-[1.75rem] bg-card p-5 shadow-soft">
-      <h2 className="text-2xl font-bold text-primary">FOTOS DA COMUNIDADE</h2>
+      <h2 className="text-2xl font-bold text-primary">FOTOS E RECEITAS DA COMUNIDADE</h2>
       <div className="mt-3 flex flex-wrap gap-2">
         <select aria-label="Categoria" className={sel} value={cat} onChange={(e) => setCat(e.target.value)}>
           <option value="">Todas as categorias</option>
@@ -49,6 +50,29 @@ export function CommunityPhotosAdmin() {
                 <b className="block">{postTitle(r.recipe_title, r.first_name)}</b>
                 <span className="block text-sm text-muted-foreground">{CATEGORY_LABEL[r.category as RecipeCategory] ?? r.category} · {new Date(r.created_at).toLocaleDateString("pt-BR")}</span>
                 <span className="block text-sm font-semibold">{r.status === "pendente" ? "⏳ Pendente" : r.status === "aprovada" ? "✅ Aprovada" : "🔒 Privada — sem autorização para Instagram"}</span>
+                {r.recipe_markdown && (
+                  <div className="pt-1">
+                    <button
+                      type="button"
+                      onClick={() => setOpenRecipe((o) => ({ ...o, [r.id]: !o[r.id] }))}
+                      className="text-sm font-bold text-primary underline"
+                    >
+                      {openRecipe[r.id] ? "Ocultar receita" : "📖 Ver receita completa"}
+                    </button>
+                    {openRecipe[r.id] && (
+                      <div className="mt-2 max-h-56 overflow-y-auto whitespace-pre-wrap rounded-xl bg-muted p-2 text-xs">
+                        {r.recipe_markdown}
+                        <button
+                          type="button"
+                          onClick={() => navigator.clipboard.writeText(r.recipe_markdown!).then(() => toast.success("Receita copiada!"))}
+                          className="mt-2 block font-bold text-primary underline"
+                        >
+                          📋 Copiar receita
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
                 {r.status === "pendente" && <button onClick={() => approve(r)} className="mt-2 w-full rounded-xl bg-accent px-3 py-2 font-bold text-accent-foreground">Aprovar para o Instagram</button>}
                 {r.caption && (
                   <div className="mt-2 rounded-xl bg-muted p-2 text-sm">

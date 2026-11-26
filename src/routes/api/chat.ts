@@ -4,6 +4,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { createOpenAI } from "@ai-sdk/openai";
 import { convertToModelMessages, createUIMessageStream, createUIMessageStreamResponse, generateId, isStepCount, streamText, tool, type UIMessage } from "ai";
 import { CATEGORY_LABEL, RECIPE_CATEGORIES, RECIPES, DYNAMIC_RECIPE_RULES, bankCovers, categoryAnswer, suggestedNames, type RecipeCategory } from "@/lib/recipes";
+import { splitRecipes } from "@/lib/recipe-cards";
 import { z } from "zod";
 import { getUserClient } from "@/lib/supabase-user.server";
 import { BASE_PERSONA, CATEGORIES, MODES, MODE_PROMPTS, type Mode } from "@/lib/zelfa-prompts";
@@ -38,6 +39,41 @@ function lighten(messages: UIMessage[]): UIMessage[] {
       parts: m.parts.map((p) => (p.type === "file" ? { type: "text" as const, text: "[foto enviada anteriormente]" } : p)),
     };
   });
+}
+
+/** Salva automaticamente na pasta do usuário cada receita gerada pela ZELFA (sem duplicar títulos). */
+async function autoSaveRecipes(
+  supabase: Awaited<ReturnType<typeof getUserClient>> extends infer T ? NonNullable<T>["supabase"] : never,
+  userId: string,
+  markdown: string,
+) {
+  try {
+    const generated = splitRecipes(markdown).filter((p): p is Extract<typeof p, { kind: "recipe" }> => p.kind === "recipe").map((p) => p.recipe);
+    if (!generated.length) return;
+    const { data: existing } = await supabase.from("saved_recipes").select("title").eq("user_id", userId);
+    const seen = new Set((existing ?? []).map((r) => r.title.trim().toLowerCase()));
+    const toInsert = generated
+      .filter((r) => {
+        const key = r.title.trim().toLowerCase();
+        if (!key || seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      })
+      .map((r) => ({
+        user_id: userId,
+        title: r.title,
+        category: r.category,
+        minutes: r.minutes,
+        level: r.level,
+        markdown: r.markdown,
+      }));
+    if (toInsert.length) {
+      const { error } = await supabase.from("saved_recipes").insert(toInsert);
+      if (error) console.error("Falha ao guardar receitas na pasta", error);
+    }
+  } catch (err) {
+    console.error("autoSaveRecipes", err);
+  }
 }
 
 export const Route = createFileRoute("/api/chat")({
@@ -127,6 +163,7 @@ export const Route = createFileRoute("/api/chat")({
             onEnd: async ({ responseMessage }) => {
               const { error } = await supabase.from("chat_messages").insert({ user_id: user.id, message: responseMessage as never });
               if (error) console.error("Falha ao salvar resposta da ZELFA", error);
+              await autoSaveRecipes(supabase, user.id, answer);
             },
           });
           return createUIMessageStreamResponse({ stream });
@@ -272,6 +309,8 @@ Lista de compras atual (não é estoque em casa): ${(items ?? []).map((i) => i.n
               .from("chat_messages")
               .insert({ user_id: user.id, message: responseMessage as never });
             if (error) console.error("Falha ao salvar resposta da ZELFA", error);
+            const fullText = responseMessage.parts.map((p) => (p.type === "text" ? p.text : "")).join("\n");
+            await autoSaveRecipes(supabase, user.id, fullText);
           },
           onError: (err) => {
             console.error(err);

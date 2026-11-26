@@ -64,7 +64,7 @@ export function RecipeCardView({ recipe, onDelete, saved }: { recipe: RecipeCard
           <div className="flex aspect-[16/10] w-full flex-col items-center justify-center gap-3 bg-primary p-6 text-center text-primary-foreground">
             <span className="text-6xl" aria-hidden>📸</span>
             <p className="max-w-sm font-display text-xl leading-snug">Fotografe seu prato e guarde no seu Álbum da Cozinha 💛</p>
-            <DishPhotoButton title={recipe.title} category={recipe.category} onDone={() => setTick((t) => t + 1)} />
+            <DishPhotoButton title={recipe.title} category={recipe.category} markdown={recipe.markdown} onDone={() => setTick((t) => t + 1)} />
           </div>
         )}
         <span className="absolute left-3 top-3 rounded-full bg-primary/90 px-3 py-1 text-sm font-bold text-primary-foreground">{CATEGORY_LABEL[recipe.category]}</span>
@@ -120,7 +120,7 @@ export function RecipeCardView({ recipe, onDelete, saved }: { recipe: RecipeCard
               {isSaved ? "✅ Salva" : "💾 SALVAR"}
             </button>
           )}
-          {own && <DishPhotoButton title={recipe.title} category={recipe.category} onDone={() => setTick((t) => t + 1)} />}
+          {own && <DishPhotoButton title={recipe.title} category={recipe.category} markdown={recipe.markdown} onDone={() => setTick((t) => t + 1)} />}
           <button type="button" onClick={() => speak(essentialSpeech(recipe.markdown))} className="rounded-full border-2 border-accent px-4 py-2 font-bold">▶️ OUVIR</button>
           {onDelete && <button type="button" onClick={onDelete} aria-label="Tirar do caderno" className="ml-auto rounded-full px-3 py-2 text-muted-foreground hover:bg-muted"><Trash2 className="h-5 w-5" /></button>}
         </div>
